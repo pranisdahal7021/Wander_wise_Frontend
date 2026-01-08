@@ -23,61 +23,32 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { data, useNavigate } from "react-router-dom";
-import { registerUser } from "../api/auth.js";
-import logo from "../assets/logo.png";
-import { use } from "react";
-import useAuth from "@/hooks/useAuth.js";
+import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
+const formSchema = z.object({});
 
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(8, { message: "Name must be at least 8 characters long" }),
-
-    email: z
-      .string()
-      .min(8, { message: "Email must be at least 8 characters long" }),
-
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters long" }),
-
-    confirmPassword: z.string().min(8, {
-      message: "Confirm Password must be at least 8 characters long",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-export default function Register() {
-
-  const {login} = useAuth();
+export default function Signin() {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   const onSubmit = async (data) => {
     console.log(data);
-    const { name, email, password } = data;
     try {
-      const response = await registerUser({ name, email, password });
+      const response = await loginUser(data);
       console.log(response);
       if (response.token) {
         login(response.user, response.token);
         navigate("/dashboard");
       }else{
-        toast.error("Registration failed. Please try again.");
+        toast.error("Signin failed. Please try again.");
       }
     } catch (error) {
       console.log(error);
@@ -89,31 +60,15 @@ export default function Register() {
     <section className="h-dvh flex items-center justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="w-120">
+          <Card className="w-100">
             <CardHeader>
-              <div>
-              <CardTitle>Sign Up</CardTitle>
+              <CardTitle>Sign In</CardTitle>
               <CardDescription>
-                Enter your credentials to sign up. 
+                Enter your credentials to sign in.
               </CardDescription>
-              </div>
             </CardHeader>
 
             <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="email"
@@ -148,24 +103,6 @@ export default function Register() {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="********"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
 
             <CardFooter className="flex flex-col gap-6">
@@ -173,9 +110,9 @@ export default function Register() {
                 Submit
               </Button>
               <p className="text-m text-black-500">
-                Already have an account?
-                <a href="/login" className="text-red-500 underline">
-                  Sign In
+                Don't have an account?{" "}
+                <a href="/register" className="text-red-500 underline">
+                  Register
                 </a>
               </p>
             </CardFooter>
