@@ -25,7 +25,17 @@ import { Input } from "@/components/ui/input";
 import { data, useNavigate } from "react-router-dom";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
-const formSchema = z.object({});
+import { loginUser } from "@/api/auth";
+
+const formSchema = z.object({
+  email: z
+      .string()
+      .min(8, { message: "Email must be at least 8 characters long" }),
+
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" }),
+});
 
 export default function Signin() {
   const { login } = useAuth();
