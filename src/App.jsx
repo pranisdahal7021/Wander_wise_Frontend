@@ -3,13 +3,16 @@ import LandingPage from "./Pages/LandingPage";
 import About from "./Pages/About";
 import Register from "./Pages/Register";
 import Signin from "./Pages/Signin";
-import Dashboard from "./Pages/Dashboard";
 import useAuth from "./hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import Dashboard from "./Pages/Dashboard";
+import TripsPages from "./Pages/trips/TripsPages";
 import AppLayout from "./components/layouts/AppLayout";
+import AddTripPage from "./Pages/trips/AddTripPage";
+import EditTripPage from "./Pages/trips/EditTripPage";
 
 function App() {
-  const {token, logout} = useAuth();
+  const { token, logout } = useAuth();
 
   const decodedToken = token ? jwtDecode(token) : null;
   console.log(decodedToken);
@@ -19,20 +22,19 @@ function App() {
       const decodedToken = token ? jwtDecode(token) : null;
       const userId = decodedToken.userId;
 
-      if (decodedToken &&  decodedToken?.exp){
+      if (decodedToken && decodedToken?.exp) {
         const currentTime = Date.now(); // Current time in milliseconds
-        if(decodedToken.exp < currentTime / 1000){
+        if (decodedToken.exp < currentTime / 1000) {
           logout();
-        return <Navigate to="/login"/>
+          return <Navigate to="/login" />;
         }
       }
-      if(!userId){
+      if (!userId) {
         logout();
-        return <Navigate to="/login"/>
+        return <Navigate to="/login" />;
       }
 
-      return <AppLayout/>
-
+      return <AppLayout />;
     } catch (error) {
       console.error(err);
       logout();
@@ -48,12 +50,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/trips" element={<TripsPages />} />
+            <Route path="/trips/add" elememts={<AddTripPage />} />
+            <Route path="/trips/edit/:id" elements={<EditTripPage/>} />
           </Route>
-
         </Routes>
       </BrowserRouter>
     </>
