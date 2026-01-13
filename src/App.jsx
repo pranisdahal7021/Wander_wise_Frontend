@@ -8,8 +8,8 @@ import { jwtDecode } from "jwt-decode";
 import Dashboard from "./Pages/Dashboard";
 import TripsPages from "./Pages/trips/TripsPages";
 import AppLayout from "./components/layouts/AppLayout";
-import AddTripPage from "./Pages/trips/AddTripPage";
 import EditTripPage from "./Pages/trips/EditTripPage";
+import AddTripPage from "./Pages/trips/AddTripPage";
 
 function App() {
   const { token, logout } = useAuth();
@@ -53,8 +53,8 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/trips" element={<TripsPages />} />
-            <Route path="/trips/add" elememts={<AddTripPage />} />
-            <Route path="/trips/edit/:id" elements={<EditTripPage/>} />
+            <Route path="/trips/add" element={<AddTripPage />} />
+            <Route path="/trips/edit/:id" element={<EditTripPage/>} />
           </Route>
         </Routes>
       </BrowserRouter>
